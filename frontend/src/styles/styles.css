@@ -130,3 +130,68 @@ button:hover {
 .sidebar ul li a:hover {
     background-color: #007bff; /* Change background on hover */
 }
+/* General Modal Styles */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 90%;  /* Responsive width */
+    max-width: 400px;  /* Max width for larger screens */
+}
+
+/* Modal Header */
+.modal h2 {
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+}
+
+/* Modal Form */
+.modal form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input Styles */
+.modal input {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.modal input:focus {
+    border-color: #007bff;  /* Blue border on focus */
+    outline: none;
+}
+
+/* Button Styles */
+.modal button {
+    padding: 12px;
+    background-color: #28a745;  /* Green background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.modal button:hover {
+    background-color: #218838;  /* Darker green on hover */
+}
+
+/* Close Button */
+.modal button[type="button"] {
+    background-color: #dc3545;  /* Red for close button */
+}
+
+.modal button[type="button"]:hover {
+    background-color: #c82333;  /* Darker red on hover */
+}

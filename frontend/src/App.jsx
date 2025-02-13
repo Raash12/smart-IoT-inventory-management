@@ -8,6 +8,7 @@ import Items from './pages/Items'; // Import the Items component
 import Navbar from './components/Navbar';
 import './styles/styles.css'; // Importing the CSS file
 
+
 const App = () => {
     return (
         <Router>
@@ -16,6 +17,7 @@ const App = () => {
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                
                 <Route path="/products" element={<Products />} /> {/* Add Products route */}
                 <Route path="/items" element={<Items />} /> {/* Add Items route */}
             </Routes>

@@ -20,14 +20,18 @@
     margin: 10px 0; /* Space between items */
 }
 
-.sidebar ul li a {
-    color: white; /* Link color */
+.sidebar ul li button {
+    color: white; /* Button text color */
     text-decoration: none; /* Remove underline */
     display: block; /* Make the whole area clickable */
-    padding: 10px; /* Space around link */
+    padding: 10px; /* Space around button */
     transition: background-color 0.3s; /* Smooth background transition */
+    width: 100%; /* Full width for buttons */
+    background-color: #007bff; /* Default button background */
+    border: none; /* Remove border */
+    cursor: pointer; /* Cursor pointer on hover */
 }
 
-.sidebar ul li a:hover {
-    background-color: #007bff; /* Change background on hover */
+.sidebar ul li button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }

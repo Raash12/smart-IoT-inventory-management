@@ -5,12 +5,14 @@ const Signup = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage(''); // Clear previous messages
         try {
-            const res = await fetch('http://localhost:5000/api/auth/register', {
+            const res = await fetch('http://localhost:5000/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -22,10 +24,11 @@ const Signup = () => {
                 console.log('Signup successful', data);
                 navigate('/'); // Redirect to Login page
             } else {
-                console.error(data.message);
+                setMessage(data.message || 'Signup failed');
             }
         } catch (error) {
             console.error('Error:', error);
+            setMessage('An error occurred: ' + error.message);
         }
     };
 
@@ -38,6 +41,7 @@ const Signup = () => {
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
                 <button type="submit">Create Account</button>
             </form>
+            {message && <p>{message}</p>}
         </div>
     );
 };
