@@ -1,10 +1,23 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .sidebar {
     width: 200px; /* Width of sidebar */
     background-color: #343a40; /* Background color */
     height: 100vh; /* Full height */
     padding: 20px;
     color: white; /* Text color */
-    position: fixed; /* Fix position on the left */
+    position: fixed; /* Fix position */
+}
+
+.left-sidebar {
+    left: 0; /* Position on the left */
+}
+
+.right-sidebar {
+    right: 0; /* Position on the right */
 }
 
 .sidebar h2 {
@@ -35,3 +48,8 @@
 .sidebar ul li button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
+
+.content {
+    margin-left: 220px; /* Space for the left sidebar */
+    margin-right: 220px; /* Space for the right sidebar */
+    padding: 20px; /* Padding for content */
