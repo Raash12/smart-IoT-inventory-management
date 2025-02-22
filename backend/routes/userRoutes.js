@@ -1,25 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+const admin = require('firebase-admin');
 const authMiddleware = require('../middleware/authMiddleware');
 
 // Get user details
 router.get('/profile', authMiddleware, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
-        if (!user) return res.status(404).send('User not found.');
-        res.json(user);
-    } catch (error) {
-        res.status(500).send('Server error.');
-    }
-});
+        const userDoc = await admin.firestore().collection('accounts').doc(req.user.id).get();
+        
+        if (!userDoc.exists) return res.status(404).send('User not found.');
 
-// Get all users
-router.get('/', authMiddleware, async (req, res) => {
-    try {
-        const users = await User.find().select('-password');
-        res.json(users);
+        const userData = userDoc.data();
+        res.json({
+            uid: req.user.id,
+            email: userData.email,
+            username: userData.username,
+        });
     } catch (error) {
+        console.error(error);
         res.status(500).send('Server error.');
     }
 });
@@ -29,17 +27,23 @@ router.put('/update', authMiddleware, async (req, res) => {
     const { username, email } = req.body;
 
     try {
-        const updatedUser = await User.findByIdAndUpdate(
-            req.user.id,
-            { username, email },
-            { new: true, runValidators: true }
-        ).select('-password');
+        // Update user in Firebase Authentication
+        const updatedUser = await admin.auth().updateUser(req.user.id, {
+            email,
+            displayName: username,
+        });
 
-        if (!updatedUser) {
-            return res.status(404).send('User not found.');
-        }
+        // Update user details in Firestore
+        await admin.firestore().collection('accounts').doc(req.user.id).update({
+            username,
+            email,
+        });
 
-        res.json(updatedUser);
+        res.json({
+            uid: updatedUser.uid,
+            email: updatedUser.email,
+            username,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error.');
@@ -49,12 +53,11 @@ router.put('/update', authMiddleware, async (req, res) => {
 // Delete user
 router.delete('/delete', authMiddleware, async (req, res) => {
     try {
-        const deletedUser = await User.findByIdAndDelete(req.user.id);
-        if (!deletedUser) {
-            return res.status(404).send('User not found.');
-        }
+        await admin.auth().deleteUser(req.user.id);
+        await admin.firestore().collection('accounts').doc(req.user.id).delete();
         res.json({ message: 'User deleted successfully.' });
     } catch (error) {
+        console.error(error);
         res.status(500).send('Server error.');
     }
 });

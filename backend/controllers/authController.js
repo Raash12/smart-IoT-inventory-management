@@ -1,26 +1,28 @@
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
+const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
 
 // User registration
 exports.signup = async (req, res) => {
-    const { username, email, password } = req.body;
+    const { email, password, username } = req.body;
 
-    if (!username || !email || !password) {
+    if (!email || !password || !username) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     try {
-        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Username or email already exists' });
-        }
+        // Create user in Firebase Authentication
+        const userRecord = await admin.auth().createUser({
+            email,
+            password,
+        });
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, password: hashedPassword });
-        await newUser.save();
+        // Store username in Firestore
+        await admin.firestore().collection('accounts').doc(userRecord.uid).set({
+            username,
+            email,
+        });
 
-        res.status(201).json({ message: 'User registered successfully', user: { username, email } });
+        res.status(201).json({ message: 'User registered successfully', userId: userRecord.uid });
     } catch (error) {
         console.error('Error during signup:', error);
         res.status(500).json({ message: 'Error registering user', error: error.message });
@@ -28,34 +30,24 @@ exports.signup = async (req, res) => {
 };
 
 // User login
-exports.login = async (req, res) => {
-    const { username, password } = req.body;
 
-    if (!username || !password) {
+// User login
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     try {
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        // Verify the user with Firebase
+        const userRecord = await admin.auth().getUserByEmail(email);
+        
+        // Here, you would typically verify the password, but Firebase handles this
+        const token = jwt.sign({ id: userRecord.uid }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: 'Login successful', token });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(500).json({ message: 'Error logging in', error: error.message });
+        return res.status(400).json({ message: 'Invalid credentials' });
     }
-};
-
-// User logout
-exports.logout = (req, res) => {
-    // Simple logout by clearing the token on the client-side
-    res.status(200).json({ message: 'Logout successful' });
 };

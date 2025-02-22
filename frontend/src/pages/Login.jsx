@@ -1,33 +1,29 @@
+// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth, signInWithEmailAndPassword } from '../firebase'; // Adjust the import path if needed
 
 const Login = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setMessage(''); // Clear previous messages
+        setMessage('');
+        
         try {
-            const res = await fetch('http://localhost:5000/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                localStorage.setItem('token', data.token);
-                navigate('/dashboard'); // Redirect to Dashboard
-            } else {
-                setMessage(data.message || 'Invalid credentials');
-            }
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Store the user token (Firebase doesn't return accessToken directly)
+            localStorage.setItem('token', user.uid); // You can store user.uid or other relevant info
+            
+            navigate('/dashboard'); // Redirect to Dashboard
         } catch (error) {
             console.error('Error:', error);
-            setMessage('An error occurred while trying to log in.');
+            setMessage('Invalid credentials or an error occurred.');
         }
     };
 
@@ -36,10 +32,10 @@ const Login = () => {
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
                 <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
                     required
                 />
                 <input
