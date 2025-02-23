@@ -1,18 +1,19 @@
-// src/firebase.js
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+// Import Firebase modules
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
+// Firebase configuration
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  apiKey: "AIzaSyCrZMno56Y-1hK_c3Szi_c348JaIrkUwA4",
+  authDomain: "smartiotinventory.firebaseapp.com",
+  projectId: "smartiotinventory",
+  storageBucket: "smartiotinventory.firebasestorage.app",
+  messagingSenderId: "Y830966514696",
+  appId: "1:830966514696:web:fb4b969becdd901aeb3dbd",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-export { auth, signInWithEmailAndPassword };
+export { app, auth };

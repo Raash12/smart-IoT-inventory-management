@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const jwt = require('jsonwebtoken');
 
 const authMiddleware = async (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1];

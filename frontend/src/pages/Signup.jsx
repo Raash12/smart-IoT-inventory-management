@@ -1,4 +1,3 @@
-// src/pages/Signup.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,11 +18,18 @@ const Signup = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password }),
             });
-            const data = await res.json();
+
+            const data = await res.json(); // Move this up to handle error response properly
+            
             if (res.ok) {
-                navigate('/'); // Redirect to Login page
+                navigate('/'); // Redirect to Login page on success
             } else {
-                setMessage(data.message || 'Signup failed');
+                // Handle specific errors based on status code or message
+                if (data.message) {
+                    setMessage(data.message);
+                } else {
+                    setMessage('Signup failed. Please try again.');
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -58,7 +64,7 @@ const Signup = () => {
                 />
                 <button type="submit">Create Account</button>
             </form>
-            {message && <p>{message}</p>}
+            {message && <p>{message}</p>} {/* Display error or success messages */}
         </div>
     );
 };
