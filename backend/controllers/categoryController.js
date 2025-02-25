@@ -1,5 +1,9 @@
-// controllers/categoryController.js
 const admin = require('firebase-admin');
+
+// Initialize Firebase Admin SDK only once
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
 
 // Create a new category
 exports.createCategory = async (req, res) => {
@@ -10,6 +14,15 @@ exports.createCategory = async (req, res) => {
     }
 
     try {
+        const existingCategorySnapshot = await admin.firestore().collection('categories')
+            .where('name', '==', name)
+            .limit(1)
+            .get();
+
+        if (!existingCategorySnapshot.empty) {
+            return res.status(400).json({ message: 'Category already exists' });
+        }
+
         const categoryRef = await admin.firestore().collection('categories').add({
             name,
             description,
@@ -43,9 +56,14 @@ exports.updateCategory = async (req, res) => {
     const { id } = req.params;
     const { name, description } = req.body;
 
+    if (!name || !description) {
+        return res.status(400).json({ message: 'Name and description are required' });
+    }
+
     try {
         const categoryRef = admin.firestore().collection('categories').doc(id);
         await categoryRef.update({ name, description });
+
         res.json({ message: 'Category updated successfully' });
     } catch (error) {
         console.error('Error updating category:', error);

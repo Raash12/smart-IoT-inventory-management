@@ -1,15 +1,18 @@
 const admin = require('firebase-admin');
 
+// Initialize Firebase Admin SDK only once
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
+
 // Create a new product
 exports.createProduct = async (req, res) => {
     const { name, ProductId, CategoryName, Location, Quantity, BatchDate, ExpiryDate } = req.body;
 
-    // Validate required fields
     if (!name || !ProductId || !CategoryName || !Location || Quantity === undefined || !BatchDate || !ExpiryDate) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Ensure dates are valid
     const batchDate = new Date(BatchDate);
     const expiryDate = new Date(ExpiryDate);
     const currentDate = new Date();
@@ -23,24 +26,22 @@ exports.createProduct = async (req, res) => {
     }
 
     try {
-        // Fetch the category by name
         const categorySnapshot = await admin.firestore().collection('categories')
             .where('name', '==', CategoryName)
             .limit(1)
             .get();
 
-        if (categorySnapshot.empty) {
-            return res.status(404).json({ message: 'Category not found' });
-        }
+        let categoryId = 'defaultCategoryId'; // Set default CategoryId
 
-        const categoryDoc = categorySnapshot.docs[0]; // Get the first matching category
-        const categoryId = categoryDoc.id; // Get the category's ID
+        if (!categorySnapshot.empty) {
+            const categoryDoc = categorySnapshot.docs[0];
+            categoryId = categoryDoc.id; // Update categoryId if category exists
+        }
 
         const productRef = await admin.firestore().collection('products').add({
             name,
             ProductId,
-            CategoryId: categoryId, // Now using CategoryId
-            CategoryName,  // Add category name
+            CategoryName,
             Location,
             Quantity,
             BatchDate: batchDate,
@@ -75,31 +76,49 @@ exports.updateProduct = async (req, res) => {
     const { id } = req.params;
     const { name, ProductId, CategoryName, Location, Quantity, BatchDate, ExpiryDate } = req.body;
 
+    if (!name || !ProductId || !CategoryName || !Location || Quantity === undefined || !BatchDate || !ExpiryDate) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const batchDate = new Date(BatchDate);
+    const expiryDate = new Date(ExpiryDate);
+    const currentDate = new Date();
+
+    if (batchDate >= expiryDate) {
+        return res.status(400).json({ message: 'BatchDate must be before ExpiryDate' });
+    }
+
+    if (batchDate < currentDate) {
+        return res.status(400).json({ message: 'BatchDate cannot be in the past' });
+    }
+
     try {
-        // Fetch the category by name
-        const categorySnapshot = await admin.firestore().collection('categories')
-            .where('name', '==', CategoryName)
-            .limit(1)
-            .get();
+        let categoryId = 'defaultCategoryId'; // Set default CategoryId
 
-        if (categorySnapshot.empty) {
-            return res.status(404).json({ message: 'Category not found' });
+        // Optionally check for category existence for update
+        if (CategoryName) {
+            const categorySnapshot = await admin.firestore().collection('categories')
+                .where('name', '==', CategoryName)
+                .limit(1)
+                .get();
+
+            if (!categorySnapshot.empty) {
+                const categoryDoc = categorySnapshot.docs[0];
+                categoryId = categoryDoc.id; // Update categoryId if category exists
+            }
         }
-
-        const categoryDoc = categorySnapshot.docs[0]; // Get the first matching category
-        const categoryId = categoryDoc.id; // Get the category's ID
 
         const productRef = admin.firestore().collection('products').doc(id);
         await productRef.update({
             name,
             ProductId,
-            CategoryId: categoryId, // Now using CategoryId
-            CategoryName,  // Update category name
+            CategoryName,
             Location,
             Quantity,
-            BatchDate,
-            ExpiryDate,
+            BatchDate: batchDate,
+            ExpiryDate: expiryDate,
         });
+
         res.json({ message: 'Product updated successfully' });
     } catch (error) {
         console.error('Error updating product:', error);
@@ -113,7 +132,7 @@ exports.deleteProduct = async (req, res) => {
 
     try {
         await admin.firestore().collection('products').doc(id).delete();
-        res.json({ message: 'Product deleted successfully.' });
+        res.json({ message: 'Product deleted successfully' });
     } catch (error) {
         console.error('Error deleting product:', error);
         res.status(500).json({ message: 'Error deleting product', error: error.message });

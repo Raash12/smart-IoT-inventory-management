@@ -12,12 +12,14 @@ const Dashboard = () => {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
-                const data = await res.json();
-                if (res.ok) {
-                    setUserData(data);
-                } else {
-                    console.error('Failed to fetch user data:', data.message);
+
+                if (!res.ok) {
+                    const errorData = await res.text(); // Get the response text for debugging
+                    throw new Error(`Failed to fetch user data: ${errorData}`);
                 }
+
+                const data = await res.json();
+                setUserData(data);
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }

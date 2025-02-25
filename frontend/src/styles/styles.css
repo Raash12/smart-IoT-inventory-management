@@ -195,3 +195,146 @@ button:hover {
 .modal button[type="button"]:hover {
     background-color: #c82333;  /* Darker red on hover */
 }
+.dashboard-container {
+    display: flex;
+}
+
+.dashboard-content {
+    padding: 20px;
+    flex: 1;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form div {
+    margin-bottom: 10px;
+}
+.dashboard-container {
+    display: flex; /* Use flexbox for layout */
+    height: 100vh; /* Full height of the viewport */
+    background-color: #f8f9fa; /* Light background for the dashboard */
+}
+
+.dashboard-content {
+    margin-left: 220px; /* Space for the sidebar */
+    padding: 20px; /* Add padding */
+    flex-grow: 1; /* Allow it to take up remaining space */
+    background-color: #ffffff; /* White background for content */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    overflow: hidden; /* Prevent scrolling */
+    height: calc(100vh - 40px); /* Adjust height to fit without overflow */
+}
+
+h1 {
+    text-align: center; /* Center the heading */
+    color: #333; /* Dark text color */
+}
+
+form {
+    display: flex; /* Use flexbox for form layout */
+    flex-direction: column; /* Stack inputs vertically */
+    max-width: 320px; /* Further reduced max width for the form */
+    margin: 0 auto; /* Center the form */
+    padding: 10px; /* Reduced padding for the form */
+    background: white; /* White background for form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+label {
+    margin-bottom: 3px; /* Space below labels */
+    font-weight: bold; /* Bold labels */
+    color: #333; /* Dark color for labels */
+}
+
+input,
+select {
+    margin-bottom: 8px; /* Further reduced space between inputs */
+    padding: 8px; /* Reduced padding for inputs */
+    border: 1px solid #ced4da; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    width: 100%; /* Full width for inputs and selects */
+    font-size: 12px; /* Smaller font size for improved compactness */
+}
+
+input:focus,
+select:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle shadow effect on focus */
+}
+
+button {
+    padding: 8px; /* Further reduced padding for button */
+    background-color: #28a745; /* Green background */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Add transform effect */
+    font-size: 12px; /* Smaller font size for buttons */
+}
+
+button:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 200px; /* Width of sidebar */
+    background-color: #343a40; /* Background color */
+    height: 100vh; /* Full height */
+    padding: 20px;
+    color: white; /* Text color */
+    position: fixed; /* Fix position on the left */
+    overflow: hidden; /* Prevent scrolling in sidebar */
+}
+
+.sidebar h2 {
+    margin-bottom: 20px; /* Space below sidebar heading */
+}
+
+.sidebar ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+}
+
+.sidebar ul li {
+    margin: 10px 0; /* Space between items */
+}
+
+.sidebar ul li a {
+    color: white; /* Link color */
+    text-decoration: none; /* Remove underline */
+    display: block; /* Make the whole area clickable */
+    padding: 10px; /* Space around link */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.sidebar ul li a:hover {
+    background-color: #007bff; /* Change background on hover */
+}
+
+
+
+
+
+form {
+    margin-bottom: 20px;
+}
+
+input {
+    margin-bottom: 10px;
+    padding: 8px;
+    width: 100%;
+}
+
+button {
+    margin-right: 5px;
+}
