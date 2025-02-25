@@ -1,7 +1,6 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa; /* Light background for better contrast */
 }
 
 .sidebar {
@@ -11,7 +10,6 @@ body {
     padding: 20px;
     color: white; /* Text color */
     position: fixed; /* Fix position */
-    overflow-y: auto; /* Enable scrolling if content overflows */
 }
 
 .left-sidebar {
@@ -24,8 +22,6 @@ body {
 
 .sidebar h2 {
     margin-bottom: 20px;
-    font-size: 1.5rem; /* Font size for headers */
-    color: #ffffff; /* White color for header */
 }
 
 .sidebar ul {
@@ -42,36 +38,20 @@ body {
     text-decoration: none; /* Remove underline */
     display: block; /* Make the whole area clickable */
     padding: 10px; /* Space around button */
-    transition: background-color 0.3s, transform 0.2s; /* Smooth background transition */
+    transition: background-color 0.3s; /* Smooth background transition */
     width: 100%; /* Full width for buttons */
     background-color: #007bff; /* Default button background */
     border: none; /* Remove border */
     cursor: pointer; /* Cursor pointer on hover */
-    border-radius: 5px; /* Rounded corners for buttons */
 }
 
 .sidebar ul li button:hover {
     background-color: #0056b3; /* Darker blue on hover */
-    transform: translateY(-2px); /* Slight lift effect on hover */
 }
 
 .content {
     margin-left: 220px; /* Space for the left sidebar */
     margin-right: 220px; /* Space for the right sidebar */
     padding: 20px; /* Padding for content */
-    background-color: #ffffff; /* White background for content */
-    border-radius: 8px; /* Rounded corners for content area */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for content area */
-    min-height: calc(100vh - 40px); /* Ensure content takes full height minus header */
-}
 
-/* Optional: Add styles for responsive design */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 150px; /* Adjust sidebar width for smaller screens */
     }
-    .content {
-        margin-left: 170px; /* Adjust content margin for smaller screens */
-        margin-right: 170px; /* Adjust content margin for smaller screens */
-    }
-}
