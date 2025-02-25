@@ -1,12 +1,12 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar'; // Import the Sidebar component
 
-const Items = () => {
+const Categories = () => {
     return (
         <div className="dashboard-container">
             <Sidebar />
             <div className="dashboard-content">
-                <h1>Items</h1>
+                <h1>Categories</h1>
                 {/* <p>Manage your items here.</p> */}
                 {/* Additional item management features can be added here */}
             </div>
@@ -14,4 +14,4 @@ const Items = () => {
     );
 };
 
-export default Items;
+export default Categories;

@@ -4,9 +4,10 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products'; // Import the Products component
-import Items from './pages/Items'; // Import the Items component
+
 import Navbar from './components/Navbar';
 import './styles/styles.css'; // Importing the CSS file
+import Categories from './pages/Categories';
 
 
 const App = () => {
@@ -19,7 +20,7 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 
                 <Route path="/products" element={<Products />} /> {/* Add Products route */}
-                <Route path="/items" element={<Items />} /> {/* Add Items route */}
+                <Route path="/Categories" element={<Categories />} /> {/* Add Items route */}
             </Routes>
         </Router>
     );

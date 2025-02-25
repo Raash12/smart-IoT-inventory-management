@@ -1,12 +1,11 @@
-// controllers/productController.js
 const admin = require('firebase-admin');
 
 // Create a new product
 exports.createProduct = async (req, res) => {
-    const { name, ProductId, CategoryId, Location, Quantity, BatchDate, ExpiryDate } = req.body;
+    const { name, ProductId, CategoryName, Location, Quantity, BatchDate, ExpiryDate } = req.body;
 
     // Validate required fields
-    if (!name || !ProductId || !CategoryId || !Location || Quantity === undefined || !BatchDate || !ExpiryDate) {
+    if (!name || !ProductId || !CategoryName || !Location || Quantity === undefined || !BatchDate || !ExpiryDate) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -24,10 +23,24 @@ exports.createProduct = async (req, res) => {
     }
 
     try {
+        // Fetch the category by name
+        const categorySnapshot = await admin.firestore().collection('categories')
+            .where('name', '==', CategoryName)
+            .limit(1)
+            .get();
+
+        if (categorySnapshot.empty) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        const categoryDoc = categorySnapshot.docs[0]; // Get the first matching category
+        const categoryId = categoryDoc.id; // Get the category's ID
+
         const productRef = await admin.firestore().collection('products').add({
             name,
             ProductId,
-            CategoryId,
+            CategoryId: categoryId, // Now using CategoryId
+            CategoryName,  // Add category name
             Location,
             Quantity,
             BatchDate: batchDate,
@@ -60,11 +73,33 @@ exports.getProducts = async (req, res) => {
 // Update a product
 exports.updateProduct = async (req, res) => {
     const { id } = req.params;
-    const { name, ProductId, CategoryId, Location, Quantity, BatchDate, ExpiryDate } = req.body;
+    const { name, ProductId, CategoryName, Location, Quantity, BatchDate, ExpiryDate } = req.body;
 
     try {
+        // Fetch the category by name
+        const categorySnapshot = await admin.firestore().collection('categories')
+            .where('name', '==', CategoryName)
+            .limit(1)
+            .get();
+
+        if (categorySnapshot.empty) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        const categoryDoc = categorySnapshot.docs[0]; // Get the first matching category
+        const categoryId = categoryDoc.id; // Get the category's ID
+
         const productRef = admin.firestore().collection('products').doc(id);
-        await productRef.update({ name, ProductId, CategoryId, Location, Quantity, BatchDate, ExpiryDate });
+        await productRef.update({
+            name,
+            ProductId,
+            CategoryId: categoryId, // Now using CategoryId
+            CategoryName,  // Update category name
+            Location,
+            Quantity,
+            BatchDate,
+            ExpiryDate,
+        });
         res.json({ message: 'Product updated successfully' });
     } catch (error) {
         console.error('Error updating product:', error);

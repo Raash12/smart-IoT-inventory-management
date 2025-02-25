@@ -9,7 +9,7 @@ const Sidebar = ({ onLogout }) => {
             <ul>
                 <li><Link to="/dashboard">Dashboard</Link></li>
                 <li><Link to="/products">Products</Link></li>
-                <li><Link to="/items">Items</Link></li>
+                <li><Link to="/categories">Categories</Link></li>
                 <li>
                     <Link 
                         to="/" // Replace with the path you want to navigate to after logout
