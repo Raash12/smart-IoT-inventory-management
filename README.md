@@ -32,8 +32,7 @@ A web application for managing inventory, built with React, Node.js, and MongoDB
 - **Backend:**
   - Node.js
   - Express
-  - MongoDB
-  - Mongoose (for MongoDB object modeling)
+  - firebase 
   - Bcrypt (for password hashing)
   - JSON Web Tokens (JWT) for authentication
   
