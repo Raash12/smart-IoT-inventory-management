@@ -7,6 +7,7 @@ const ViewProduct = () => {
     const [selectedProduct, setSelectedProduct] = useState(null); // Store selected product for updating
     const [loading, setLoading] = useState(true); // Loading state
 
+    // Fetch products from the API
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -28,11 +29,13 @@ const ViewProduct = () => {
         fetchProducts(); // Call the fetch function
     }, []);
 
+    // Handle editing a product
     const handleEdit = (product) => {
         console.log('Editing product:', product); // Debugging line
         setSelectedProduct(product); // Set the selected product for editing
     };
 
+    // Handle deleting a product
     const handleDelete = async (id) => {
         try {
             await axios.delete(`http://localhost:5000/api/products/${id}`); // API call to delete product
@@ -44,6 +47,7 @@ const ViewProduct = () => {
         }
     };
 
+    // Handle updating a product
     const handleUpdate = async (e) => {
         e.preventDefault(); // Prevent default form submission behavior
         try {
@@ -61,6 +65,7 @@ const ViewProduct = () => {
         }
     };
 
+    // Group products by category
     const groupByCategory = (products) => {
         return products.reduce((acc, product) => {
             const category = product.CategoryName || 'Uncategorized';

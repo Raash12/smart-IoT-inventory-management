@@ -3,15 +3,10 @@ import Sidebar from '../components/Sidebar';
 
 const Dashboard = () => {
     const [userData, setUserData] = useState(null);
-    const token = localStorage.getItem('token'); // Retrieve token from localStorage
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         const fetchUserData = async () => {
-            if (!token) {
-                console.error('No token found');
-                return; // Exit if no token
-            }
-
             try {
                 const res = await fetch('http://localhost:5000/api/users/profile', {
                     method: 'GET',
@@ -27,11 +22,12 @@ const Dashboard = () => {
                 setUserData(data);
             } catch (error) {
                 console.error('Error fetching user data:', error);
-                alert('Failed to fetch user data. Please check your token and try again.');
             }
         };
 
-        fetchUserData(); // Call the function to fetch user data
+        if (token) {
+            fetchUserData();
+        }
     }, [token]);
 
     return (
