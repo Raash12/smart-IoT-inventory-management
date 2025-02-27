@@ -1,55 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar'; // Import the Sidebar component
 
 const ViewProduct = () => {
-    const { id } = useParams(); // Get the product ID from the URL
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [category, setCategory] = useState(null);
+    const [products, setProducts] = useState([]); // Store all products
+    const [loading, setLoading] = useState(true); // Loading state
 
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchProducts = async () => {
             try {
-                const response = await axios.get(`/api/products/${id}`); // Fetch the product
-                setProduct(response.data);
-
-                // Fetch the category based on CategoryName
-                const categoryResponse = await axios.get(`/api/categories/${response.data.CategoryName}`);
-                setCategory(categoryResponse.data);
+                // Fetch all products from the API
+                const response = await axios.get('/api/products');
+                console.log('Products Response:', response.data); // Log the response for debugging
+                
+                // Check if the response is an array before setting the state
+                setProducts(Array.isArray(response.data) ? response.data : []);
             } catch (error) {
-                console.error('Error fetching product:', error);
+                console.error('Error fetching products:', error);
             } finally {
-                setLoading(false);
+                setLoading(false); // Set loading to false after fetching
             }
         };
 
-        fetchProduct();
-    }, [id]);
+        fetchProducts(); // Call the fetch function
+    }, []); // Empty dependency array to run only once on mount
 
+    // Show loading message while fetching data
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    if (!product) {
-        return <div>Product not found</div>;
-    }
+    // Organize products by category
+    const categorizedProducts = products.reduce((acc, product) => {
+        const { CategoryName } = product;
+        if (!acc[CategoryName]) {
+            acc[CategoryName] = []; // Create a new category array if it doesn't exist
+        }
+        acc[CategoryName].push(product); // Add product to the corresponding category
+        return acc;
+    }, {});
 
     return (
         <div className="dashboard-container">
             <Sidebar />
             <div className="dashboard-content">
-                <h1>{category ? category.name : 'Category'} Details</h1>
-                <div className="product-container">
-                    <h2>{product.name}</h2>
-                    <p><strong>Product ID:</strong> {product.ProductId}</p>
-                    <p><strong>Category:</strong> {product.CategoryName}</p>
-                    <p><strong>Location:</strong> {product.Location}</p>
-                    <p><strong>Quantity:</strong> {product.Quantity}</p>
-                    <p><strong>Batch Date:</strong> {new Date(product.BatchDate).toLocaleDateString()}</p>
-                    <p><strong>Expiry Date:</strong> {new Date(product.ExpiryDate).toLocaleDateString()}</p>
-                </div>
+                <h1>Product List</h1>
+
+                {Object.keys(categorizedProducts).map(category => (
+                    <div key={category} className="product-category">
+                        <h2>{category}</h2>
+                        {categorizedProducts[category].length > 0 ? (
+                            <ul>
+                                {categorizedProducts[category].map(product => (
+                                    <li key={product.id}>
+                                        {product.name} <span>Quantity: {product.Quantity}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No {category} products found.</p>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );
