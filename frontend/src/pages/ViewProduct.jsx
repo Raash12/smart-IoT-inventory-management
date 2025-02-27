@@ -3,25 +3,25 @@ import axios from 'axios';
 import Sidebar from '../components/Sidebar'; // Import the Sidebar component
 
 const ViewProduct = () => {
-    const [products, setProducts] = useState([]); // Initialize as an empty array
+    const [products, setProducts] = useState([]); // Initialize products as an empty array
     const [selectedProduct, setSelectedProduct] = useState(null); // Store selected product for updating
     const [loading, setLoading] = useState(true); // Loading state
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/products'); // Ensure this URL is correct
+                const response = await axios.get('http://localhost:5000/api/products'); // API call to fetch products
                 if (Array.isArray(response.data)) {
-                    setProducts(response.data); // Set products if response is an array
+                    setProducts(response.data); // Set products if the response is an array
                 } else {
                     console.error('Unexpected response format:', response.data);
                     setProducts([]); // Set to empty array if not as expected
                 }
             } catch (error) {
                 console.error('Error fetching products:', error);
-                setProducts([]); // Set to empty array on error
+                setProducts([]); // Handle error by setting products to an empty array
             } finally {
-                setLoading(false);
+                setLoading(false); // Set loading to false after fetching
             }
         };
 
@@ -29,12 +29,13 @@ const ViewProduct = () => {
     }, []);
 
     const handleEdit = (product) => {
-        setSelectedProduct(product); // Set selected product for editing
+        console.log('Editing product:', product); // Debugging line
+        setSelectedProduct(product); // Set the selected product for editing
     };
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/products/${id}`); // Call delete API
+            await axios.delete(`http://localhost:5000/api/products/${id}`); // API call to delete product
             setProducts(products.filter(product => product.id !== id)); // Remove deleted product from state
             alert('Product deleted successfully');
         } catch (error) {
@@ -44,19 +45,34 @@ const ViewProduct = () => {
     };
 
     const handleUpdate = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission behavior
         try {
-            await axios.put(`http://localhost:5000/api/products/${selectedProduct.id}`, selectedProduct); // Update product API call
+            // API call to update product
+            await axios.put(`http://localhost:5000/api/products/${selectedProduct.id}`, selectedProduct);
+            // Update the local state with the updated product
             setProducts(products.map(product => (
                 product.id === selectedProduct.id ? selectedProduct : product
             )));
             alert('Product updated successfully');
-            setSelectedProduct(null); // Reset selected product
+            setSelectedProduct(null); // Reset selected product after update
         } catch (error) {
             console.error('Error updating product:', error);
             alert('Error updating product');
         }
     };
+
+    const groupByCategory = (products) => {
+        return products.reduce((acc, product) => {
+            const category = product.CategoryName || 'Uncategorized';
+            if (!acc[category]) {
+                acc[category] = [];
+            }
+            acc[category].push(product);
+            return acc;
+        }, {});
+    };
+
+    const groupedProducts = groupByCategory(products);
 
     if (loading) {
         return <div>Loading...</div>; // Loading message
@@ -68,18 +84,24 @@ const ViewProduct = () => {
             <div className="dashboard-content">
                 <h1>Product List</h1>
 
-                {Array.isArray(products) && products.length > 0 ? (
-                    products.map(product => (
-                        <div key={product.id} className="product-container">
-                            <h3>{product.name}</h3>
-                            <p><strong>Product ID:</strong> {product.ProductId}</p>
-                            <p><strong>Category:</strong> {product.CategoryName}</p>
-                            <p><strong>Location:</strong> {product.Location}</p>
-                            <p><strong>Quantity:</strong> {product.Quantity}</p>
-                            <p><strong>Batch Date:</strong> {new Date(product.BatchDate).toLocaleDateString()}</p>
-                            <p><strong>Expiry Date:</strong> {new Date(product.ExpiryDate).toLocaleDateString()}</p>
-                            <button onClick={() => handleEdit(product)}>Edit</button>
-                            <button onClick={() => handleDelete(product.id)}>Delete</button>
+                {Object.keys(groupedProducts).length > 0 ? (
+                    Object.keys(groupedProducts).map(category => (
+                        <div key={category} className="product-category">
+                            <h2>{category}</h2>
+                            <ul>
+                                {groupedProducts[category].map(product => (
+                                    <li key={product.id}>
+                                        <h3>{product.name}</h3>
+                                        <p><strong>Product ID:</strong> {product.ProductId}</p>
+                                        <p><strong>Location:</strong> {product.Location}</p>
+                                        <p><strong>Quantity:</strong> {product.Quantity}</p>
+                                        <p><strong>Batch Date:</strong> {new Date(product.BatchDate).toLocaleDateString()}</p>
+                                        <p><strong>Expiry Date:</strong> {new Date(product.ExpiryDate).toLocaleDateString()}</p>
+                                        <button onClick={() => handleEdit(product)}>Edit</button>
+                                        <button onClick={() => handleDelete(product.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     ))
                 ) : (

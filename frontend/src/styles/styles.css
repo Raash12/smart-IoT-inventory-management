@@ -353,33 +353,3 @@ button {
     border-radius: 5px;
     text-align: center;
 }
-
-
-.dashboard-content {
-    padding: 20px;
-}
-
-.product-category {
-    margin-bottom: 20px;
-}
-
-.product-category h2 {
-    margin-bottom: 10px;
-}
-
-.product-category ul {
-    list-style-type: none; /* Remove default list styling */
-    padding: 0; /* Remove default padding */
-}
-
-.product-category li {
-    background-color: #f8f8f8; /* Light background for list items */
-    margin: 5px 0; /* Space between items */
-    padding: 10px; /* Padding around each list item */
-    border-radius: 5px; /* Rounded corners */
-}
-
-.product-category span {
-    float: right; /* Align quantity to the right */
-    font-weight: bold; /* Make quantity bold */
-}
