@@ -125,7 +125,26 @@ exports.updateProduct = async (req, res) => {
         res.status(500).json({ message: 'Error updating product', error: error.message });
     }
 };
+// Get all products or filter by category
+exports.getProducts = async (req, res) => {
+    const { category } = req.query; // Get category from query parameters
+    try {
+        let query = admin.firestore().collection('products');
+        if (category) {
+            query = query.where('CategoryName', '==', category); // Filter by category
+        }
+        const snapshot = await query.get();
+        const products = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
 
+        res.json(products);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ message: 'Error fetching products', error: error.message });
+    }
+};
 // Delete a product
 exports.deleteProduct = async (req, res) => {
     const { id } = req.params;

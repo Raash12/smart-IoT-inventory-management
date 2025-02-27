@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Sidebar.css'; // Import the CSS file for styling
 
-const Sidebar = ({ onLogout }) => {
+const Sidebar = ({ onLogout, productId }) => {
     return (
         <div className="sidebar">
             <h2>Menu</h2>
@@ -10,7 +10,10 @@ const Sidebar = ({ onLogout }) => {
                 <li><Link to="/dashboard">Dashboard</Link></li>
                 <li><Link to="/products">Products</Link></li>
                 <li><Link to="/categories">Categories</Link></li>
-                {/* Correct route for View Categories */}
+                <li>
+                        <Link to={`/products/${productId}`}>View Product</Link>
+                    </li>
+             
                 <li>
                     <Link 
                         to="/" // Replace with the path you want to navigate to after logout

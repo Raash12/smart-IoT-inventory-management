@@ -5,6 +5,7 @@
     background-color: #343a40; /* Dark background */
     padding: 15px 20px; /* Padding for navbar */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    
 }
 
 .navbar-brand {
@@ -23,6 +24,7 @@
     display: flex; /* Flexbox for horizontal layout */
     gap: 20px; /* Space between menu items */
     margin: 0; /* Remove margin */
+
 }
 
 .navbar-menu li {
