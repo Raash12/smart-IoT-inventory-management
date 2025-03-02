@@ -17,8 +17,9 @@ const Login = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Store user UID or token
-      localStorage.setItem("token", user.uid);
+      // Fetch token and store it
+      const token = await user.getIdToken();
+      localStorage.setItem("token", token); // Store the token
 
       navigate("/dashboard");
     } catch (error) {
