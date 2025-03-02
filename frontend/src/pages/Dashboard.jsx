@@ -31,8 +31,7 @@ const Dashboard = () => {
             });
 
             if (!res.ok) {
-                const error = await res.text();
-                throw new Error(`Failed to fetch user data: ${error}`);
+                throw new Error(`Failed to fetch user data: ${res.statusText}`);
             }
 
             const data = await res.json();
@@ -51,10 +50,10 @@ const Dashboard = () => {
             const categories = {};
             productSnapshot.forEach(doc => {
                 const data = doc.data();
-                if (categories[data.category]) {
-                    categories[data.category] += data.quantity;
+                if (categories[data.CategoryName]) {
+                    categories[data.CategoryName] += data.Quantity;
                 } else {
-                    categories[data.category] = data.quantity;
+                    categories[data.CategoryName] = data.Quantity;
                 }
             });
 
