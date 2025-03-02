@@ -5,6 +5,7 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Categories from './pages/Categories';
+import ViewCategories from './pages/ViewCategories'; // Import the new ViewCategories component
 import ViewProduct from './pages/ViewProduct'; // Import the ViewProduct component
 import Navbar from './components/Navbar';
 import './styles/styles.css'; // Importing the CSS file
@@ -19,6 +20,7 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/categories" element={<Categories />} />
+                <Route path="/view-categories" element={<ViewCategories />} /> {/* Add this route */}
                 <Route path="/products/:id" element={<ViewProduct />} /> {/* View Product route */}
             </Routes>
         </Router>
