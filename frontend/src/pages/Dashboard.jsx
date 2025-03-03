@@ -24,17 +24,20 @@ const Dashboard = () => {
     }, [token]);
 
     const fetchUserData = async () => {
+        console.log('Fetching user data...');
         try {
             const res = await fetch('http://localhost:5000/api/users/profile', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
-
+            console.log('Response:', res);
+    
             if (!res.ok) {
                 throw new Error(`Failed to fetch user data: ${res.statusText}`);
             }
-
+    
             const data = await res.json();
+            console.log('User data:', data);
             setUserData(data);
         } catch (error) {
             console.error('Error fetching user data:', error);

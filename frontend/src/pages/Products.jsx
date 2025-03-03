@@ -8,6 +8,7 @@ const Products = () => {
     const [categories, setCategories] = useState([
         { id: 1, name: 'Milk' },
         { id: 2, name: 'Perfume' },
+        { id: 2, name: 'Cream' },
     ]); // Default categories
 
     const [product, setProduct] = useState({
