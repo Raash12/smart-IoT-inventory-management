@@ -7,13 +7,12 @@ import Products from './pages/Products';
 import Categories from './pages/Categories';
 import ViewCategories from './pages/ViewCategories'; // Import the new ViewCategories component
 import ViewProduct from './pages/ViewProduct'; // Import the ViewProduct component
-import Navbar from './components/Navbar';
+
 import './styles/styles.css'; // Importing the CSS file
 
 const App = () => {
     return (
         <Router>
-            <Navbar />
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
