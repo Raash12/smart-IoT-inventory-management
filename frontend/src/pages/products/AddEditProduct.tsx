@@ -190,7 +190,7 @@ const AddEditProduct = () => {
     return (
       <div className="flex items-center justify-center min-h-[500px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-inventory-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading product data...</p>
         </div>
       </div>
@@ -337,7 +337,6 @@ const AddEditProduct = () => {
                             selected={field.value}
                             onSelect={field.onChange}
                             initialFocus
-                            className={cn("p-3 pointer-events-auto")}
                           />
                         </PopoverContent>
                       </Popover>
@@ -377,7 +376,6 @@ const AddEditProduct = () => {
                             selected={field.value}
                             onSelect={field.onChange}
                             initialFocus
-                            className={cn("p-3 pointer-events-auto")}
                           />
                         </PopoverContent>
                       </Popover>
@@ -396,8 +394,7 @@ const AddEditProduct = () => {
                 Cancel
               </Button>
               <Button 
-                type="submit" 
-                className="bg-inventory-primary hover:bg-inventory-secondary"
+                type="submit"
                 disabled={loading}
               >
                 {loading ? (

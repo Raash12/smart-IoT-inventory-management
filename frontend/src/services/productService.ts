@@ -1,5 +1,4 @@
-
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 export interface Product {
@@ -23,14 +22,24 @@ export const createProduct = async (productData: Omit<Product, 'id'>) => {
       throw new Error('Batch date must be before expiry date');
     }
     
-    if (productData.BatchDate < new Date()) {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    
+    const batchDate = new Date(productData.BatchDate);
+    batchDate.setHours(0, 0, 0, 0);
+    
+    if (batchDate < currentDate) {
       throw new Error('Batch date cannot be in the past');
     }
     
     const docRef = await addDoc(collection(db, COLLECTION_NAME), {
-      ...productData,
-      BatchDate: productData.BatchDate,
-      ExpiryDate: productData.ExpiryDate
+      name: productData.name,
+      ProductId: productData.ProductId,
+      CategoryName: productData.CategoryName,
+      Location: productData.Location,
+      Quantity: productData.Quantity,
+      BatchDate: Timestamp.fromDate(productData.BatchDate),
+      ExpiryDate: Timestamp.fromDate(productData.ExpiryDate),
     });
     
     return { id: docRef.id, ...productData };
@@ -52,10 +61,14 @@ export const getProducts = async (categoryName?: string): Promise<Product[]> => 
     
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => {
-      const data = doc.data() as Record<string, any>;
+      const data = doc.data();
       return {
         id: doc.id,
-        ...data,
+        name: data.name,
+        ProductId: data.ProductId,
+        CategoryName: data.CategoryName,
+        Location: data.Location,
+        Quantity: data.Quantity,
         BatchDate: data.BatchDate.toDate(),
         ExpiryDate: data.ExpiryDate.toDate()
       } as Product;
@@ -69,8 +82,37 @@ export const getProducts = async (categoryName?: string): Promise<Product[]> => 
 // Update a product
 export const updateProduct = async (id: string, productData: Partial<Omit<Product, 'id'>>) => {
   try {
+    // Validate dates if both are provided
+    if (productData.BatchDate && productData.ExpiryDate) {
+      if (productData.BatchDate >= productData.ExpiryDate) {
+        throw new Error('Batch date must be before expiry date');
+      }
+      
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      
+      const batchDate = new Date(productData.BatchDate);
+      batchDate.setHours(0, 0, 0, 0);
+      
+      if (batchDate < currentDate) {
+        throw new Error('Batch date cannot be in the past');
+      }
+    }
+    
     const productRef = doc(db, COLLECTION_NAME, id);
-    await updateDoc(productRef, productData);
+    
+    // Convert Date objects to Firestore Timestamps
+    const dataToUpdate: Record<string, any> = {};
+    
+    if (productData.name !== undefined) dataToUpdate.name = productData.name;
+    if (productData.ProductId !== undefined) dataToUpdate.ProductId = productData.ProductId;
+    if (productData.CategoryName !== undefined) dataToUpdate.CategoryName = productData.CategoryName;
+    if (productData.Location !== undefined) dataToUpdate.Location = productData.Location;
+    if (productData.Quantity !== undefined) dataToUpdate.Quantity = productData.Quantity;
+    if (productData.BatchDate) dataToUpdate.BatchDate = Timestamp.fromDate(productData.BatchDate);
+    if (productData.ExpiryDate) dataToUpdate.ExpiryDate = Timestamp.fromDate(productData.ExpiryDate);
+    
+    await updateDoc(productRef, dataToUpdate);
     return { id, ...productData };
   } catch (error) {
     console.error('Error updating product:', error);
