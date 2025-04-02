@@ -7,8 +7,7 @@ import Products from './pages/Products';
 import Categories from './pages/Categories';
 import ViewCategories from './pages/ViewCategories'; // Import the new ViewCategories component
 import ViewProduct from './pages/ViewProduct'; // Import the ViewProduct component
-
-import './styles/styles.css'; // Importing the CSS file
+ // Importing the CSS file
 
 const App = () => {
     return (
