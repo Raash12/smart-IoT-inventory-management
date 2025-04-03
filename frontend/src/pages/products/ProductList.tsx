@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -101,7 +100,6 @@ const ProductList = () => {
 
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    product.ProductId.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.Location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -189,7 +187,6 @@ const ProductList = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Product ID</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Quantity</TableHead>
@@ -202,7 +199,6 @@ const ProductList = () => {
               {filteredProducts.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell>{product.ProductId}</TableCell>
                   <TableCell>{product.CategoryName}</TableCell>
                   <TableCell>{product.Location}</TableCell>
                   <TableCell>

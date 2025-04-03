@@ -7,9 +7,9 @@ if (!admin.apps.length) {
 
 // Create a new product
 exports.createProduct = async (req, res) => {
-    const { name, ProductId, CategoryName, Location, Quantity, BatchDate, ExpiryDate } = req.body;
+    const { name, CategoryName, Location, Quantity, BatchDate, ExpiryDate } = req.body;
 
-    if (!name || !ProductId || !CategoryName || !Location || Quantity === undefined || !BatchDate || !ExpiryDate) {
+    if (!name || !CategoryName || !Location || Quantity === undefined || !BatchDate || !ExpiryDate) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -40,7 +40,6 @@ exports.createProduct = async (req, res) => {
 
         const productRef = await admin.firestore().collection('products').add({
             name,
-            ProductId,
             CategoryName,
             Location,
             Quantity,
@@ -111,7 +110,6 @@ exports.updateProduct = async (req, res) => {
         const productRef = admin.firestore().collection('products').doc(id);
         await productRef.update({
             name,
-            ProductId,
             CategoryName,
             Location,
             Quantity,
