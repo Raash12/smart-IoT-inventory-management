@@ -43,7 +43,6 @@ import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  ProductId: z.string().min(1, { message: 'Product ID is required' }),
   CategoryName: z.string().min(1, { message: 'Category is required' }),
   Location: z.string().min(1, { message: 'Location is required' }),
   Quantity: z.coerce.number().min(0, { message: 'Quantity must be 0 or greater' }),
@@ -70,7 +69,6 @@ const AddEditProduct = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      ProductId: '',
       CategoryName: '',
       Location: '',
       Quantity: 0,
@@ -108,7 +106,6 @@ const AddEditProduct = () => {
           if (product) {
             form.reset({
               name: product.name,
-              ProductId: product.ProductId,
               CategoryName: product.CategoryName,
               Location: product.Location,
               Quantity: product.Quantity,
@@ -146,7 +143,6 @@ const AddEditProduct = () => {
       if (isEditMode && id) {
         await updateProduct(id, {
           name: data.name,
-          ProductId: data.ProductId,
           CategoryName: data.CategoryName,
           Location: data.Location,
           Quantity: data.Quantity,
@@ -160,7 +156,6 @@ const AddEditProduct = () => {
       } else {
         await createProduct({
           name: data.name,
-          ProductId: data.ProductId,
           CategoryName: data.CategoryName,
           Location: data.Location,
           Quantity: data.Quantity,
@@ -226,19 +221,6 @@ const AddEditProduct = () => {
                   )}
                 />
                 
-                <FormField
-                  control={form.control}
-                  name="ProductId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Product ID</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter product ID" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

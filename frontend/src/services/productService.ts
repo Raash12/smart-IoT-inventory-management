@@ -1,11 +1,10 @@
-
+// productService.ts
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 export interface Product {
   id?: string;
   name: string;
-  ProductId: string;
   CategoryName: string;
   Location: string;
   Quantity: number;
@@ -22,17 +21,16 @@ export const createProduct = async (productData: Omit<Product, 'id'>) => {
     if (productData.BatchDate >= productData.ExpiryDate) {
       throw new Error('Batch date must be before expiry date');
     }
-    
     if (productData.BatchDate < new Date()) {
       throw new Error('Batch date cannot be in the past');
     }
-    
+
     const docRef = await addDoc(collection(db, COLLECTION_NAME), {
       ...productData,
       BatchDate: productData.BatchDate,
-      ExpiryDate: productData.ExpiryDate
+      ExpiryDate: productData.ExpiryDate,
     });
-    
+
     return { id: docRef.id, ...productData };
   } catch (error) {
     console.error('Error creating product:', error);
@@ -49,7 +47,6 @@ export const getProducts = async (categoryName?: string): Promise<Product[]> => 
     } else {
       q = collection(db, COLLECTION_NAME);
     }
-    
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => {
       const data = doc.data() as Record<string, any>;
@@ -57,7 +54,7 @@ export const getProducts = async (categoryName?: string): Promise<Product[]> => 
         id: doc.id,
         ...data,
         BatchDate: data.BatchDate.toDate(),
-        ExpiryDate: data.ExpiryDate.toDate()
+        ExpiryDate: data.ExpiryDate.toDate(),
       } as Product;
     });
   } catch (error) {

@@ -1,30 +1,31 @@
+// ProductList.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from '@/components/ui/card';
 import { Package, Search, Plus, Trash2, Edit, Filter } from 'lucide-react';
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { format } from 'date-fns';
 import {
@@ -46,7 +47,7 @@ const ProductList = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -57,7 +58,7 @@ const ProductList = () => {
         setLoading(true);
         const [productsData, categoriesData] = await Promise.all([
           getProducts(selectedCategory || undefined),
-          getCategories()
+          getCategories(),
         ]);
         setProducts(productsData);
         setCategories(categoriesData);
@@ -72,13 +73,11 @@ const ProductList = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [selectedCategory, toast]);
 
   const handleDeleteProduct = async () => {
     if (!productToDelete) return;
-    
     try {
       await deleteProduct(productToDelete);
       setProducts(products.filter(product => product.id !== productToDelete));
@@ -98,8 +97,8 @@ const ProductList = () => {
     }
   };
 
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.Location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -112,9 +111,9 @@ const ProductList = () => {
   const isLowStock = (quantity: number) => quantity < 10;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Products</h1>
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Products</h2>
         <Button onClick={() => navigate('/products/add')} className="bg-inventory-primary hover:bg-inventory-secondary">
           <Plus className="h-4 w-4 mr-2" />
           Add Product
@@ -147,8 +146,8 @@ const ProductList = () => {
                   All Categories
                 </DropdownMenuItem>
                 {categories.map((category) => (
-                  <DropdownMenuItem 
-                    key={category.id} 
+                  <DropdownMenuItem
+                    key={category.id}
                     onClick={() => setSelectedCategory(category.name)}
                   >
                     {category.name}
@@ -172,8 +171,8 @@ const ProductList = () => {
           <div className="flex flex-col items-center space-y-2">
             <Package className="h-8 w-8 text-muted-foreground" />
             <p className="text-muted-foreground">No products found</p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={() => navigate('/products/add')}
             >
@@ -214,15 +213,15 @@ const ProductList = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
                         onClick={() => navigate(`/products/edit/${product.id}`)}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
                         onClick={() => setProductToDelete(product.id || '')}
                       >
@@ -247,7 +246,7 @@ const ProductList = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleDeleteProduct}
               className="bg-red-500 hover:bg-red-600"
             >

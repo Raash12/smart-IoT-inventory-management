@@ -67,11 +67,7 @@ export function AppSidebar() {
       url: "/categories",
       icon: ListOrdered,
     },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings,
-    }
+
   ];
 
   return (
