@@ -1,12 +1,12 @@
-
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Package } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +15,7 @@ const SignupPage = () => {
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,9 +23,18 @@ const SignupPage = () => {
     try {
       setLoading(true);
       await signup(email, password, username);
-      navigate('/dashboard');
+      toast({
+        title: "Account created!",
+        description: "Your account has been created successfully. Please login.",
+      });
+      navigate('/');
     } catch (error) {
       console.error('Signup error:', error);
+      toast({
+        title: "Signup failed",
+        description: "There was an error creating your account. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
@@ -90,12 +100,12 @@ const SignupPage = () => {
           <CardFooter className="flex flex-col">
             <div className="text-sm text-center text-muted-foreground mt-2">
               Already have an account?{' '}
-              <a 
-                href="/" 
+              <Link 
+                to="/" 
                 className="text-inventory-primary hover:text-inventory-secondary underline"
               >
                 Sign in
-              </a>
+              </Link>
             </div>
           </CardFooter>
         </Card>
