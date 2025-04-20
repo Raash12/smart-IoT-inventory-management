@@ -1,4 +1,3 @@
-// productService.ts
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -17,7 +16,6 @@ const COLLECTION_NAME = 'products';
 // Create a new product
 export const createProduct = async (productData: Omit<Product, 'id'>) => {
   try {
-    // Validate data
     if (productData.BatchDate >= productData.ExpiryDate) {
       throw new Error('Batch date must be before expiry date');
     }

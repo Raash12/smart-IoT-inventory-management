@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -11,13 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { 
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Package, Search, Plus, Trash2, Edit, Filter } from 'lucide-react';
 import { 
   DropdownMenu,
@@ -60,8 +53,8 @@ const ProductList = () => {
           getProducts(selectedCategory || undefined),
           getCategories()
         ]);
-        setProducts(productsData);
-        setCategories(categoriesData);
+        setProducts(productsData || []);
+        setCategories(categoriesData || []);
       } catch (error) {
         console.error('Error fetching data:', error);
         toast({
@@ -69,6 +62,9 @@ const ProductList = () => {
           description: 'Failed to load products data.',
           variant: 'destructive',
         });
+        // Set empty arrays to avoid undefined errors
+        setProducts([]);
+        setCategories([]);
       } finally {
         setLoading(false);
       }
@@ -99,24 +95,32 @@ const ProductList = () => {
     }
   };
 
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    product.Location.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Fix the filtering logic to safely handle undefined values
+  const filteredProducts = products.filter(product => {
+    const productName = product.name || '';
+    const productLocation = product.Location || '';
+    const search = searchQuery.toLowerCase();
+    
+    return productName.toLowerCase().includes(search) || 
+           productLocation.toLowerCase().includes(search);
+  });
 
   const isExpiringSoon = (date: Date) => {
+    if (!date) return false;
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
     return date <= thirtyDaysFromNow;
   };
 
-  const isLowStock = (quantity: number) => quantity < 10;
+  const isLowStock = (quantity: number) => {
+    return typeof quantity === 'number' && quantity < 10;
+  };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Button onClick={() => navigate('/products/add')} className="bg-inventory-primary hover:bg-inventory-secondary">
+        <Button onClick={() => navigate('/products/add')} className="bg-primary hover:bg-primary/90">
           <Plus className="h-4 w-4 mr-2" />
           Add Product
         </Button>
@@ -207,10 +211,12 @@ const ProductList = () => {
                       {product.Quantity}
                     </span>
                   </TableCell>
-                  <TableCell>{format(product.BatchDate, 'MMM dd, yyyy')}</TableCell>
+                  <TableCell>
+                    {product.BatchDate && format(product.BatchDate, 'MMM dd, yyyy')}
+                  </TableCell>
                   <TableCell>
                     <span className={`${isExpiringSoon(product.ExpiryDate) ? 'text-red-500 font-semibold' : ''}`}>
-                      {format(product.ExpiryDate, 'MMM dd, yyyy')}
+                      {product.ExpiryDate && format(product.ExpiryDate, 'MMM dd, yyyy')}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
